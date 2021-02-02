@@ -1,7 +1,6 @@
-package com.sty.ne.proxy_core;
+package com.sty.ne.proxy_tool;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.lang.reflect.Field;
@@ -47,10 +46,9 @@ public class Utils {
                 }
                 return field;
             } catch (NoSuchFieldException e) {
-                e.printStackTrace();
+                //如果找不到在父类找
+                clazz = clazz.getSuperclass();
             }
-            //如果找不到在父类找
-            clazz = clazz.getSuperclass();
         }
         throw new NoSuchFieldException("Field " + name + " not found in " + instance.getClass());
     }
@@ -68,19 +66,16 @@ public class Utils {
         while (clazz != null) {
             try {
                 Method method = clazz.getDeclaredMethod(name, parameterTypes);
-                if(method != null) {
-                    if (!method.isAccessible()) {
-                        method.setAccessible(true);
-                    }
-                    return method;
+                if(!method.isAccessible()) {
+                    method.setAccessible(true);
                 }
+                return method;
             }catch (NoSuchMethodException e) {
-               e.printStackTrace();
+                //如果找不到往父类找
+                clazz = clazz.getSuperclass();
             }
-            //如果找不到往父类找
-            clazz = clazz.getSuperclass();
         }
         throw new NoSuchMethodException("Method " + name + " with parameters " +
-                Arrays.asList(parameterTypes) + " not found in " + instance.getClass());
+                Arrays.asList(parameterTypes) + " not found in" + instance.getClass());
     }
 }

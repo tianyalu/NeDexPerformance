@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sty.ne.dexperformance">
 
+<!--    android:name="com.sty.ne.proxy_core.ProxyApplication"-->
     <application
         android:name="com.sty.ne.proxy_core.ProxyApplication"
         android:allowBackup="true"
