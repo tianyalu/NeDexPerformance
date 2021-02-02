@@ -78,6 +78,11 @@ public class ProxyApplication extends Application {
         loadDex(dexFiles, versionDir);
     }
 
+    /**
+     * 参考：https://blog.csdn.net/qq_23992393/article/details/101441435
+     * @param dexFiles
+     * @param versionDir
+     */
     private void loadDex(List<File> dexFiles, File versionDir) {
         //通过反射方式获取pathList
         try {
