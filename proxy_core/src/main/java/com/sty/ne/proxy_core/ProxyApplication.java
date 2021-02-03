@@ -34,15 +34,19 @@ public class ProxyApplication extends Application {
         //获取用户的meta-data
         getMetaData();
         //得到当前的apk文件
+        // /data/app/com.sty.ne.dexperformance-2/base.apk
         File apkFile = new File(getApplicationInfo().sourceDir);
-        Log.e("sty", "apkFile: " + getApplicationInfo().sourceDir);
+        //Log.e("sty", "apkFile: " + getApplicationInfo().sourceDir);
 
         File versionDir = getDir(app_name + "_" + app_version, MODE_PRIVATE);
-        Log.e("sty", "versionDir: " + versionDir.getAbsolutePath());
+        // /data/data/com.sty.ne.dexperformance/app_com.sty.ne.dexperformance.app.MyApplication_dexDir_1.0
+        //Log.e("sty", "versionDir: " + versionDir.getAbsolutePath());
+        // /data/data/com.sty.ne.dexperformance/app_com.sty.ne.dexperformance.app.MyApplication_dexDir_1.0/app
         File appDir = new File(versionDir, "app"); //文件解压之后放置的目录
+        // /data/data/com.sty.ne.dexperformance/app_com.sty.ne.dexperformance.app.MyApplication_dexDir_1.0/dexDir
         File dexDir = new File(versionDir, "dexDir"); //放置dex文件
-        Log.e("sty", "appDir: " + appDir.getAbsolutePath());
-        Log.e("sty", "dexDir: " + dexDir.getAbsolutePath());
+        //Log.e("sty", "appDir: " + appDir.getAbsolutePath());
+        //Log.e("sty", "dexDir: " + dexDir.getAbsolutePath());
 
         List<File> dexFiles = new ArrayList<>();
         if(!dexDir.exists() || dexDir.list().length == 0) {
@@ -95,7 +99,6 @@ public class ProxyApplication extends Application {
             //http://androidos.net.cn/android/7.1.1_r28/xref/libcore/dalvik/src/main/java/dalvik/system/DexPathList.java
             //this.nativeLibraryPathElements = makePathElements(allNativeLibraryDirectories,
             //                                                          suppressedExceptions,
-            //
             //                                                          definingContext);
 
             Method makeDexElementsMethod;
@@ -111,7 +114,7 @@ public class ProxyApplication extends Application {
                 makeDexElementsMethod = Utils.findMethod(pathList, "makePathElements", List.class, File.class, List.class);
                 addElements = (Object[]) makeDexElementsMethod.invoke(null, dexFiles, versionDir, suppressedExceptions);
 
-            }else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            }else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {  //5.1.1上测试通过
                 // Android 5.0-6.0 使用makeDexElements(ArrayList, File, ArrayList) 注意这里参数使用ArrayList类型
                 makeDexElementsMethod = Utils.findMethod(pathList, "makeDexElements", ArrayList.class, File.class, ArrayList.class);
                 addElements = (Object[])makeDexElementsMethod.invoke(null, dexFiles, versionDir, suppressedExceptions);
@@ -145,10 +148,10 @@ public class ProxyApplication extends Application {
             Bundle bundle = applicationInfo.metaData;
             if(bundle != null) {
                 if(bundle.containsKey("app_name")) {
-                    app_name = bundle.getString("app_name");
+                    app_name = bundle.getString("app_name"); //com.sty.ne.dexperformance.app.MyApplication
                 }
                 if(bundle.containsKey("app_version")) {
-                    app_version = bundle.getString("app_version");
+                    app_version = bundle.getString("app_version"); //dexDir_1.0
                 }
                 Log.e("sty", "app_name: " + app_name + ", app_version: " + app_version);
             }
